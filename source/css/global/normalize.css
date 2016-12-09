@@ -1,0 +1,23 @@
+/**/
+*:not(head):not(script):not(title):not(style),
+:before,
+:after{
+  display:inline-flex;
+  box-sizing:border-box;
+  margin: 0;
+  padding: 0;
+  border:none;
+  outline:none;
+}
+/**/
+:root{
+
+}
+body,html{
+  display:block !important;
+}
+html{
+  body{
+    color: #f30 !important;
+  }
+}

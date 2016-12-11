@@ -5,7 +5,9 @@
 	main: 'index.js',
 	scripts: {
 		'server:prod': 'NODE_ENV=production webpack-dev-server --progress --colors',
-		'server:dev': 'NODE_ENV=development webpack-dev-server --progress --colors',
+		'server:dev': 'NODE_ENV=development webpack-dev-server --progress --colors --inline --hot',
+		/*--inspect */
+		// 'server:dev': 'NODE_ENV=development node --inspect node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --progress --colors',
 		'build:prod': 'NODE_ENV=production webpack --progress --colors',
 		'build:dev': 'NODE_ENV=development webpack --progress --colors',
 		'vue-migration-helper': 'vue-migration-helper'
@@ -38,10 +40,18 @@
 		precss: '^1.4.0',
 		'postcss-scss': '^0.4.0',
 		'html-loader': '^0.4.4',
+		'html-webpack-harddisk-plugin': '0.0.2',
+		new: '^0.1.1',
+		'vue-loader': '^10.0.2',
+		'vue-template-compiler': '^2.1.4',
+		'base64-loader': '^1.0.0',
+		'base64-image-loader': '^1.2.0',
+		'postcss-cssnext': '^2.9.0',
 	},
 	dependencies: {
 		tinymce: '^4.5.0',
 		'jquery': '^3.1.1',
-		'jquery-ui': '^1.12.1'
+		'jquery-ui': '^1.12.1',
+		vue: '^2.1.4'
 	},
 }

@@ -9,7 +9,7 @@ const
 	,ExtractTextPlugin = require('extract-text-webpack-plugin')
 	// ,HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 	/*Write html files to hard disk even when using the webpack dev server or middleware*/
-	// ,HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
+	,HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 	,BabiliPlugin = require('babili-webpack-plugin')
 ;
 
@@ -40,11 +40,27 @@ module.exports = {
 				use: [{
           loader: 'babel-loader',
           options: {
-						presets: ['es2015']
+						presets: ['es2015'],
 					}
         }],
+
 			},
 
+			{
+				test: /\.vue$/,
+				exclude: /node_modules/,
+				loader: 'vue-loader',
+				options: {
+					// ...
+					postcss: [require('postcss-cssnext')(), require('postcss-nested')]
+				},
+				// use: [{
+				// 	loader: 'postcss-loader',
+				// 	options: {
+				// 		postcss: [require('postcss-cssnext')()],
+				// 	}
+				// }],
+			},
 
 			{
 			  // HTML LOADER
@@ -158,7 +174,7 @@ module.exports = {
 			options: {
 				context: __dirname,
 				postcss: [ // <---- postcss configs go here under LoadOptionsPlugin({ options: { ??? } })
-						// require('postcss-cssnext'),
+						require('postcss-cssnext'),
 						require('postcss-nested'),
 						// require('precss')({ /* options */ }).process(YOUR_CSS, {parser: require('postcss-scss') })
 						// require('precss'),
@@ -171,6 +187,7 @@ module.exports = {
 		}),
 
 		new HtmlWebpackPlugin(Object.assign({
+				alwaysWriteToDisk: true,
 				inject: 'body',
 				filename: 'index.html',
 				filetype: 'html',
@@ -191,7 +208,7 @@ module.exports = {
 				inlineSource: '.(js|css)$',
 		})),
 
-		// new HtmlWebpackHarddiskPlugin(),
+		new HtmlWebpackHarddiskPlugin(),
 
 		new ExtractTextPlugin({
       filename: 'css/[name].bundle.css',

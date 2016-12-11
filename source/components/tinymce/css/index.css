@@ -1,8 +1,0 @@
-@import './parts/part1.css';
-
-body{
-	background: #0f0 !important;
-	z-index: 999888;
-	text-transform: uppercase;
-	font-weight: bold;
-}

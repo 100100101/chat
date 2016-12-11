@@ -4,7 +4,7 @@
   /**/
   @import './global/variables.css';
   /**/
-  /*@import './global/normalize.css';*/
+  @import './global/normalize.css';
 
 /*THEME*/
   @import './themes/default/main.css';
@@ -15,9 +15,47 @@ body{
   /*background: #0f0 !important;*/
 }
 
+ul{
 
-#feedback { font-size: 1.4em; }
-#selectable .ui-selecting { background: #FECA40; }
-#selectable .ui-selected { background: #F39814; color: white; }
-#selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-#selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+}
+li{
+  list-style: none;
+}
+
+
+.main-content{
+  display: flex;
+  justify-content: center;
+}
+
+  .chat{
+
+  }
+    .chat-admin-panel{
+      margin-top: 20px;
+    }
+      .button-open-chat{
+
+      }
+
+    [class*='chat-window']:not([class*='chat-window_']){
+      // min-height: 400px;
+      // max-height: calc(100vh / 3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+      .chat-window__textarea{
+        flex-shrink: 0;
+      }
+    .chat-window1{
+
+    }
+    .chat-window2{
+
+    }
+      .chat-window__textarea{
+        padding: 10px 5px;
+        outline: 1px dotted #333;
+
+      }

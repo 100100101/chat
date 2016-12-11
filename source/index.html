@@ -6,91 +6,41 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Test task</title>
 	<script src='//cdn.tinymce.com/4/tinymce.min.js'></script>
+	<!-- <script src='./libs/tinymce/tinymce.min.js'></script> -->
+	<!-- <script src='./js/tinymce.min.js'></script> -->
 </head>
 <body>
-
 	<!-- <header></header> -->
-	<main>
-		<!-- <ol id="selectable">
-			<li class="ui-widget-content">Item 1</li>
-			<li class="ui-widget-content">Item 2</li>
-			<li class="ui-widget-content">Item 3</li>
-			<li class="ui-widget-content">Item 4</li>
-			<li class="ui-widget-content">Item 5</li>
-			<li class="ui-widget-content">Item 6</li>
-			<li class="ui-widget-content">Item 7</li>
-		</ol> -->
-
+	<main class="main-content">
 
 		<section class="chat">
+
 			<div class="chat-admin-panel">
-				 <button class="button-open-chat">Открыть чат</button>
-		 </div>
+				<button class="ui-button button-open-chat">Открыть чат</button>
+				<button class="ui-button clear-local-storage">Отчистить localStorage</button>
+		  </div>
 
-
-			<form class="window1" title="Admin">
-
-				<ul class="window1__dialog dialog-list">
-					<li class="dialog-list__my-message post">
-						<div class="post__avatar">
-							Admin
-							<img src="images/admin.png" alt="">
-							<div>
-								Здравствуйте, могу ли я вам чем-то помочь...
-							</div>
-						</div>
-					</li>
-					<li class="dialog-list__interlocutor-message post">
-						<div class="post__avatar">
-							Client
-							<img src="images/client.gif" alt="">
-							<div>
-								Здравствуйте, я хочу...
-							</div>
-						</div>
-					</li>
-				</ul>
-
-				<textarea class="chat-window1">
-					Текст сообщения
+			<form class="chat-window1" unit-class="window" data-user-id="0">
+				<dialog-list :chat="chat" :user-id="0"></dialog-list>
+				<textarea class="chat-window__textarea">
+					<!-- Текст сообщения -->
 				</textarea>
-				<!-- <div class="window1__toolbar">
+				<!-- <div class="chat-window1__toolbar">
 				</div> -->
 			</form>
 
-			<form class="dialog window2" title="Здравствуйте Client">
-				
-				<ul class="window1__dialog dialog-list">
-					<li class="dialog-list__my-message post">
-						<div class="post__avatar">
-							Admin
-							<img src="images/admin.png" alt="">
-							<div>
-								Здравствуйте, могу ли я вам чем-то помочь...
-							</div>
-						</div>
-					</li>
-					<li class="dialog-list__interlocutor-message post">
-						<div class="post__avatar">
-							Client
-							<img src="images/client.gif" alt="">
-							<div>
-								Здравствуйте, я хочу...
-							</div>
-						</div>
-					</li>
-				</ul>
-
-				<div class="chat-window2">
-					Текст сообщения
+			<form class="chat-window2" unit-class="window" data-user-id="1">
+				<dialog-list :chat="chat" :user-id="1"></dialog-list>
+				<div class="chat-window__textarea">
+					Проверочный текст на поиск совпадений: 1 привет 2 'здрАвствуйте', 3 'добрый день', 4 'добрЫй вечер', 5 'не приходят данные', 6 'не приходят таблицы', 7 'Пока', 8 'До-свидания'.
+					Совпадения выделяются цветным подчёркиванием
 				</div>
-				<div class="window2__toolbar">
-				</div>
+				<!-- <div class="chat-window2__toolbar">
+				</div> -->
 			</form>
 
 		</section>
 	</main>
-
 	<!-- <footer></footer> -->
 </body>
 </html>

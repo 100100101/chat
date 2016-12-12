@@ -67,6 +67,8 @@
         .post__header-col2{
           display: flex;
           flex-direction: column;
+          width: 100%;
+          padding-left: 5px;
         }
           .post__user-name{
 
@@ -86,12 +88,24 @@
         .post__header{
           flex-direction: row-reverse;
         }
+        .post__header-col1{
+          margin-left: 10px;
+        }
+        .post__header-col2{
+          align-items: flex-end;
+        }
         .post__message{
           background: #00e0e0;
         }
     }
     .dialog-list__post_interlocutor{
       padding-right: 20px;
+        .post__header-col1{
+          margin-right: 10px;
+        }
+        .post__header-col2{
+
+        }
         .post__message{
           background: #ddd;
         }

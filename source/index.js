@@ -3,6 +3,7 @@
   /*TinyMCE*/
   import 'tinymce/skins/lightgray/skin.min.css';
   import 'tinymce/skins/lightgray/content.min.css';
+  import 'tinymce/skins/lightgray/content.inline.min.css';
   // import 'tinymce/plugins/visualblocks/css/visualblocks.css';
 
   /*jQuery UI*/
@@ -17,6 +18,10 @@
   import './css/index.css';
 
 /*JS*/
+
+  /*jQuery*/
+  import jQuery from 'jquery';
+
   /*jQuery UI*/
   import 'jquery-ui/ui/core.js';
   import 'jquery-ui/ui/widget.js';
@@ -28,23 +33,18 @@
   /*dialog*/
   import 'jquery-ui/ui/widgets/dialog.js';
 
-  /*jQuery*/
-  window.jQuery = window.$ = require('jquery');
-  /**/
-  // window.jQuery = window.$ = System.import('jquery').then(
-  //   module => {console.log(module);return module;}
-  //   ,error => console.error(error)
-  //);
+  /*TinyMCE*/
+  import 'tinymce/plugins/emoticons/index.js';
 
   /*Vue*/
   import Vue from 'vue/dist/vue.min.js';
 
+window.jQuery = window.$ = jQuery;
 
 window.vm = new Vue({
   el: '.main-content',
   data(){
     return {
-      // chat: /*Object.assign(require('./data.js'), {})*/$.extend(require('./data.js'), JSON.parse(localStorage.getItem('chat')) || {})
       chat: $.extend(true, require('./data.js'), JSON.parse(localStorage.getItem('chat')) || {}),
     };
   },
@@ -83,7 +83,6 @@ window.vm = new Vue({
 
 	},
 });
-
 
 
 
@@ -294,9 +293,13 @@ window.vm = new Vue({
       let
         localData = JSON.parse(localStorage.getItem('chat')) || {}
         ,number = Object.keys(vm.chat.posts).length + Object.keys(localData.posts || {}).length + 1
+
         ,newPost = {[number]: {
           userId: form.attr('data-user-id'),
-          date: new Date(),
+          date: (date => {
+            return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+          })(new Date),
+
           message,
         }},
         updatedLocalData = $.extend(true, localData, {posts: newPost})
@@ -347,7 +350,6 @@ window.vm = new Vue({
 
 
   /*INITIAL*/
-
   body.bgGradient();
 
   buttonsUI.button();

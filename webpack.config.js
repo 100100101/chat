@@ -15,8 +15,10 @@ const
 
 module.exports = {
 	devtool: 'source-map',
+
 	entry: {
-		bundle: [__dirname + '/source/index.js'],
+		// 'vendor': ['tinymce/tinymce.jquery.js'],
+		'bundle': ['./source/index.js'],
 	},
 
 	resolve: {
@@ -29,7 +31,7 @@ module.exports = {
 	output: {
 		path: __dirname + '/public/',
 		filename: 'js/[name].js',
-		publicPath: '/public/',
+		publicPath: '/',
 	},
 
 	module: {
@@ -62,11 +64,11 @@ module.exports = {
 				// }],
 			},
 
-			{
-			  // HTML LOADER
-			  test: /\.html$/,
-			  loader: 'html-loader'
-			},
+			// {
+			//   // HTML LOADER
+			//   test: /\.html$/,
+			//   loader: 'html-loader'
+			// },
 
 			// {
 	    //   test: /\.html$/,
@@ -83,7 +85,7 @@ module.exports = {
 			},
 
 			{
-				test: /\.(css|less)$/,
+				test: /\.css$/,
 				// exclude: /node_modules/,
 				// loaders: ['style-loader', 'css-loader'],
 				loader: ExtractTextPlugin.extract({
@@ -161,13 +163,12 @@ module.exports = {
 
 	plugins: [
 
-		new webpack.BannerPlugin(`build time for UNIX : ${Date.now()}`),
+		new webpack.BannerPlugin(`build time for UNIX : ${new Date()}`),
 
 		new webpack.DefinePlugin({
 			'process.env': {
 				NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }
-
     }),
 
 		new webpack.LoaderOptionsPlugin({
@@ -186,10 +187,18 @@ module.exports = {
 			}
 		}),
 
+		// new webpack.optimize.CommonsChunkPlugin({
+		// 	names: ['vendor'],
+		// 	filename: '[name].js',
+		// 	minChunks: Infinity,
+		// 	// children: true,
+		// 	// async: true,
+		// }),
+
 		new HtmlWebpackPlugin(Object.assign({
 				alwaysWriteToDisk: true,
 				inject: 'body',
-				filename: 'index.html',
+				filename: 'public/index.html',
 				filetype: 'html',
 				template: './source/index.html',
 				alwaysWriteToDisk: true,
@@ -214,16 +223,10 @@ module.exports = {
       filename: 'css/[name].bundle.css',
       allChunks: true,
 			/*disables the plugin*/
-			disable: false,
+			disable: development,
     }),
 
 
-    new webpack.optimize.CommonsChunkPlugin({
-      // names: ['vendor'],
-      // filename: '[name].js',
-			 children: true,
-			 async: true,
-    }),
 
   ].concat(production ? [
     // new webpack.optimize.UglifyJsPlugin({
@@ -246,9 +249,9 @@ module.exports = {
     port: 8080,
     contentBase: /*path.join(__dirname, 'public')*/ __dirname + '/public/',
     /*adds the HotModuleReplacementPlugin and switch the server to hot mode. Use this in combination with the inline option*/
-    // hot: true,
+    hot: development,
     /*embed the webpack-dev-server runtime into the bundle. Defaults to false*/
-    // inline: true,
+    inline: development,
     /*don't finish the grunt task. Use this in combination with the watch option*/
     // keepalive: true,
   },

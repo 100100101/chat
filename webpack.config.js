@@ -80,7 +80,10 @@ module.exports = {
 			  test: /\.(jpe?g|png|gif|svg)$/i,
 			  loader:'file-loader',
 				query: {
-					name: './images/[name].[ext]',
+					/**/
+					publicPath: '..',
+					// outputPath: '/images/',
+					name: '/images/[name].[ext]',
 				},
 			},
 

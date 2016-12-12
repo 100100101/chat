@@ -31,7 +31,7 @@ module.exports = {
 	output: {
 		path: __dirname + '/public/',
 		filename: 'js/[name].js',
-		publicPath: '/',
+		publicPath: './',
 	},
 
 	module: {
@@ -198,7 +198,7 @@ module.exports = {
 		new HtmlWebpackPlugin(Object.assign({
 				alwaysWriteToDisk: true,
 				inject: 'body',
-				filename: 'public/index.html',
+				filename: 'index.html',
 				filetype: 'html',
 				template: './source/index.html',
 				alwaysWriteToDisk: true,

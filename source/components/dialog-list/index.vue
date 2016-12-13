@@ -114,7 +114,6 @@
 
 <script>
 export default {
-
   props: [
     'chat',
     'userId',

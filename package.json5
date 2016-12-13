@@ -5,7 +5,7 @@
 	main: 'index.js',
 	scripts: {
 		'server:prod': 'NODE_ENV=production webpack-dev-server --progress --colors',
-		'server:dev': 'NODE_ENV=development webpack-dev-server --progress --colors --inline --hot',
+		'server:dev': 'NODE_ENV=development webpack-dev-server --progress --colors',
 		/*--inspect */
 		// 'server:dev': 'NODE_ENV=development node --inspect node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --progress --colors',
 		'build:prod': 'NODE_ENV=production webpack --progress --colors',
@@ -47,6 +47,8 @@
 		'base64-loader': '^1.0.0',
 		'base64-image-loader': '^1.2.0',
 		'postcss-cssnext': '^2.9.0',
+		'babel-runtime': '^6.20.0',
+		'postcss-reporter': '^2.0.0',
 	},
 	dependencies: {
 		tinymce: '^4.5.0',

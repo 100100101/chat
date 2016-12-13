@@ -10,11 +10,16 @@
   @import './themes/default/main.css';
 
 
-
 body{
   /*background: #0f0 !important;*/
 }
-
+  .bg-gradient{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index:-1;
+  }
+  
 ul{
 
 }

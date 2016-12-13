@@ -11,6 +11,16 @@ const
 	/*Write html files to hard disk even when using the webpack dev server or middleware*/
 	,HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 	,BabiliPlugin = require('babili-webpack-plugin')
+
+	,postcssModules = [
+		require('postcss-cssnext'),
+		require('postcss-nested'),
+			// require('precss')({ /* options */ }).process(YOUR_CSS, {parser: require('postcss-scss') })
+			// require('precss'),
+			// require('postcss-scss'),
+			// require('lost')(),
+		require('postcss-reporter')(),
+	]
 ;
 
 module.exports = {
@@ -40,79 +50,103 @@ module.exports = {
 				test: /\.js$/,
 				// exclude: /node_modules/,
 				use: [{
-          loader: 'babel-loader',
-          options: {
-						presets: ['es2015'],
+					loader: 'babel-loader',
+					options: {
+						comments: false,
+						presets: ['es2015'/*, 'stage-3'*/],
+						// plugins: ['transform-runtime'],
 					}
-        }],
+				}],
+			},
 
+			{
+				test: /\.css$/,
+				// exclude: /node_modules/,
+				loader: ExtractTextPlugin.extract({
+          fallbackLoader: 'style-loader',
+          loader: [{
+						loader: 'css-loader',
+						options: {
+							// root: '.',
+							sourceMap: production,
+							// modules: true,
+						},
+					},
+					{loader: 'postcss-loader'},]
+        }),
 			},
 
 			{
 				test: /\.vue$/,
-				exclude: /node_modules/,
-				loader: 'vue-loader',
-				options: {
-					// ...
-					postcss: [require('postcss-cssnext')(), require('postcss-nested')]
-				},
-				// use: [{
-				// 	loader: 'postcss-loader',
-				// 	options: {
-				// 		postcss: [require('postcss-cssnext')()],
-				// 	}
-				// }],
+				// exclude: /node_modules/,
+				use: [
+					{
+						loader: 'vue-loader',
+						options: {
+							postcss: postcssModules,
+						}
+					},
+
+					// {
+					// 	loader: 'postcss-loader',
+					// 	options: {
+					// 		postcss: [require('postcss-cssnext')()],
+					// 	}
+					// },
+					// {
+					// 	loader: 'babel-loader',
+					// 	options: {
+					// 		presets: ['es2015'/*, 'stage-3'*/],
+					// 	}
+					// }
+				],
 			},
 
-			// {
-			//   // HTML LOADER
-			//   test: /\.html$/,
-			//   loader: 'html-loader'
-			// },
+
+			// HTML LOADER
+			{
+			  test: /\.html$/,
+				use: [
+					{
+						loader: 'html-loader',
+					}
+				]
+
+			},
 
 			// {
 	    //   test: /\.html$/,
 	    //   loader: 'raw-loader'
 	    // },
 
+			//IMAGE LOADER
 			{
-			  //IMAGE LOADER
 			  test: /\.(jpe?g|png|gif|svg)$/i,
-			  loader:'file-loader',
-				query: {
-					/**/
-					publicPath: '..',
-					// outputPath: '/images/',
-					name: '/images/[name].[ext]',
-				},
+				use: [
+					{
+						loader:'file-loader',
+						options: {
+							/**/
+							publicPath: '..',
+							// outputPath: '/images/',
+							name: '/images/[name].[ext]',
+						},
+					},
+				]
+
 			},
 
 			{
-				test: /\.css$/,
-				// exclude: /node_modules/,
-				// loaders: ['style-loader', 'css-loader'],
-				loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
-          loader: [{
-						loader: 'css-loader',
-						options/*query*/: {
-							// root: '.',
-							// sourceMap: false,
-							// modules: true,
+				test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+				use: [
+					{
+						loader: 'file-loader',
+						options: {
+							publicPath: '..',
+							name: '/fonts/[name]/[name].[ext]',
 						},
-					},
-					{loader: 'postcss-loader'},]
-        }),
-				// use: [
-				// 	'style-loader',
-				// 	{
-				// 		loader: 'css-loader',
-				// 		options: {
-				// 			root: '.',
-				// 			// modules: true,
-				// 		},
-				// 	}
-				// ],
+					}
+				],
 			},
 
 			// {
@@ -120,15 +154,6 @@ module.exports = {
 			// 	test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
 			// 	loader: 'base64-font-loader'
 			// },
-
-			{
-				test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-				loader : 'file-loader',
-				query: {
-					// name: './fonts/[name].[ext]',
-					name: './fonts/[name]/[name].[ext]',
-				},
-      },
 
 			// {
 			// 	test: /\.(png|jpg|gif)$/,
@@ -146,12 +171,12 @@ module.exports = {
       //     'exports?window.tinymce'
       //   ]
       // },
-			//
+
 			// {
 			// 	test: /tinymce\/plugins/,
 			// 	loader: 'imports?tinymce,this=>{tinymce:tinymce}'
 			// },
-			//
+
       // {
       //   test: /tinymce\/(themes|plugins)\//,
 			// 	exclude: /\.css$/,
@@ -162,6 +187,7 @@ module.exports = {
 
 		]
 	},
+
 
 
 	plugins: [
@@ -175,18 +201,16 @@ module.exports = {
     }),
 
 		new webpack.LoaderOptionsPlugin({
+			debug: true,
+			vue: {
+				loaders: {
+					js: 'babel-loader?presets[]=es2015',
+				},
+			},
+
 			options: {
 				context: __dirname,
-				postcss: [ // <---- postcss configs go here under LoadOptionsPlugin({ options: { ??? } })
-						require('postcss-cssnext'),
-						require('postcss-nested'),
-						// require('precss')({ /* options */ }).process(YOUR_CSS, {parser: require('postcss-scss') })
-						// require('precss'),
-						// require('postcss-scss'),
-						// require('lost')(),
-						// require('postcss-reporter')()
-				]
-					// ...other configs that used to directly on `modules.exports`
+				postcss: postcssModules,
 			}
 		}),
 
@@ -199,6 +223,7 @@ module.exports = {
 		// }),
 
 		new HtmlWebpackPlugin(Object.assign({
+				/*html-webpack-harddisk-plugin*/
 				alwaysWriteToDisk: true,
 				inject: 'body',
 				filename: 'index.html',
@@ -206,7 +231,8 @@ module.exports = {
 				template: './source/index.html',
 				alwaysWriteToDisk: true,
 			}, production && {
-				/*html-webpack-harddisk-plugin*/
+				/*embed all javascript and css inline*/
+				inlineSource: '.(js|css)$',
 				minify: {
 					collapseWhitespace: true,
 					removeComments: true,
@@ -216,8 +242,7 @@ module.exports = {
 				},
 				// favicon:,
 				// hash:,
-				/*embed all javascript and css inline*/
-				inlineSource: '.(js|css)$',
+
 		})),
 
 		new HtmlWebpackHarddiskPlugin(),
@@ -232,12 +257,15 @@ module.exports = {
 
 
   ].concat(production ? [
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false,
-    //   },
-    // }),
-		new BabiliPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+      },
+			minimize : true,
+			sourceMap : false,
+    }),
+
+		// new BabiliPlugin(),
   	] : []
 	),
 

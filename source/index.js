@@ -42,13 +42,21 @@
 window.jQuery = window.$ = jQuery;
 
 window.vm = new Vue({
-  el: '.main-content',
+  // el: '.main-content',
   data(){
     return {
       chat: $.extend(true, require('./data.js'), JSON.parse(localStorage.getItem('chat')) || {}),
     };
   },
   components: {
+    // ['dialog-list'](){
+    //   return System.import('./components/dialog-list/index.vue').then(
+    //     module => {return module;}
+    //     ,error => console.error(error)
+    //   )/*.catch(
+    //     error => console.error('catch: ' + error)
+    //   )*/;
+    // },
     'dialog-list': require('./components/dialog-list/index.vue'),
   },
 
@@ -82,7 +90,8 @@ window.vm = new Vue({
 	destroyed(){
 
 	},
-});
+})
+  .$mount('.main-content');
 
 
 
@@ -350,7 +359,7 @@ window.vm = new Vue({
 
 
   /*INITIAL*/
-  body.bgGradient();
+  /*body*/$('.bg-gradient').bgGradient();
 
   buttonsUI.button();
 

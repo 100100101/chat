@@ -22,6 +22,7 @@
   /*jQuery*/
   import jQuery from 'jquery';
 
+
   /*jQuery UI*/
   import 'jquery-ui/ui/core.js';
   import 'jquery-ui/ui/widget.js';
@@ -34,10 +35,11 @@
   import 'jquery-ui/ui/widgets/dialog.js';
 
   /*TinyMCE*/
+  // import * as tinymce from 'tinymce';
   import 'tinymce/plugins/emoticons/index.js';
 
   /*Vue*/
-  import Vue from 'vue/dist/vue.min.js';
+  import Vue from 'vue';
 
 window.jQuery = window.$ = jQuery;
 
@@ -146,7 +148,7 @@ window.vm = new Vue({
         },
         maxHeight: wndw.outerHeight() / 3,
         minHeight: 600,
-        autoOpen: false,
+        // autoOpen: false,
         show: {
           effect: 'blind',
           duration: 1000
@@ -198,7 +200,7 @@ window.vm = new Vue({
           of: body
         },
         maxHeight: wndw.outerHeight() / 3,
-        minHeight: 500,
+        minHeight: 400,
         autoOpen: false,
         show: {
           effect: 'explode',
@@ -257,12 +259,13 @@ window.vm = new Vue({
               editor.on('init', event => {
                 self.editor1 = editor;
 
-                // editor.on('focus', event => {
-                //   editor.setContent('');
-                //   // editor.off('focus.one');
-                // });
+                editor.on('keydown', event => {
+                  event.which === 13 && self.send(self.chatWindow2, editor);
+                });
 
               });
+
+
 
             },
 
@@ -276,50 +279,92 @@ window.vm = new Vue({
     },
 
     send(form, editor){
-
       let
         message = editor.getContent()
         ,messageLower = message.toLowerCase()
         ,messageText = $(message).text()
         ,messageTextLower = messageText.toLowerCase()
-        ,searchMatchArray = ['привет', 'здравствуйте', 'добрый день', 'добрый вечер', 'не приходят данные', 'не приходят таблицы', 'Пока', 'До-свидания']
+        ,searchMatchArray = [
+          {
+            match: 'привет',
+            answer: 'Здравствуйте, рады Вас снова видеть в нашем сервисе.',
+          },{
+            match: 'здравствуйте',
+            answer: 'Здравствуйте, рады Вас видеть в нашем сервисе.',
+          },{
+            match: 'добрый день',
+            answer: 'Добрый день, чем можем вам помочь?',
+          },{
+            match: 'добрый вечер',
+            answer: 'Добрый вечер, чем можем вам помочь?',
+          },{
+            match: 'не приходят данные',
+            answer: 'Мы уточним причину ошибки "не приходят данные" и вскоре ответим вам.',
+          },{
+            match: 'не приходят таблицы',
+            answer: 'Мы уточним причину ошибки "не приходят таблицы" и вскоре ответим вам.',
+          },{
+            match: 'Пока',
+            answer: 'До-свидания, рады были Вам помочь.',
+          },{
+            match: 'До-свидания',
+            answer: 'До-свидания, будем ждать вас снова.',
+          },
+        ]
         // ,searchMatchArrayLower =
       ;
-
+      var answer = [];
       searchMatchArray.forEach((item, i, arr) => {
         let
-          itemLength = item.length
-          ,itemLower = item.toLowerCase()
+          itemLength = item.match.length
+          ,itemLower = item.match.toLowerCase()
           ,match = message.toLowerCase().indexOf(itemLower)
         ;
 
         if(match > -1){
-          message = message.slice(0, match) + '<span style="display:inline;border-bottom:1px solid #f30;">' + message.slice(match, match + itemLength) + '</span>' + message.slice(match + itemLength, -1);
+          answer.push(item.answer);
+          message = message.slice(0, match) + '<span style="display:inline;border-bottom:1px solid #01b6b6;">' + message.slice(match, match + itemLength) + '</span>' + message.slice(match + itemLength, -1);
         }
+
       });
 
 
-      let
-        localData = JSON.parse(localStorage.getItem('chat')) || {}
-        ,number = Object.keys(vm.chat.posts).length + Object.keys(localData.posts || {}).length + 1
+      let createMessage = (userId, message) => {
+        let
+          localData = JSON.parse(localStorage.getItem('chat')) || {}
+          ,number = Object.keys(vm.chat.posts).length + Object.keys(localData.posts || {}).length + 1
 
-        ,newPost = {[number]: {
-          userId: form.attr('data-user-id'),
-          date: (date => {
-            return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-          })(new Date),
+          ,newPost = {[number]: {
+            userId,
+            date: (date => {
+              return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+            })(new Date),
 
-          message,
-        }},
-        updatedLocalData = $.extend(true, localData, {posts: newPost})
-      ;
+            message,
+          }},
+          updatedLocalData = $.extend(true, localData, {posts: newPost})
+        ;
+
+        vm.chat.posts = {...vm.chat.posts, ...updatedLocalData.posts};
+      };
+
 
       try {
-        localStorage.setItem('chat', JSON.stringify(updatedLocalData));
+        // localStorage.setItem('chat', JSON.stringify(updatedLocalData));
       } catch (error) {
         console.error('localStorage error' + error);
       } finally {
-        vm.chat.posts = Object.assign({}, vm.chat.posts, updatedLocalData.posts);
+        // Object.assign({}, vm.chat.posts, updatedLocalData.posts);
+        createMessage(form.attr('data-user-id'), message);
+
+        setTimeout(() => {
+          if (answer.length > 0) {
+            createMessage('0', answer.join(' '));
+          } else {
+            createMessage('0', 'Пожалуйста ожидайте ответ ...');
+          }
+        }, 1000);
+
         editor.setContent('');
       }
 

@@ -17,26 +17,9 @@ body,html{
   display:block !important;
 }
 html{
-  // width: 100vw;
-  // height:100vh;
-  font-size: $largest-col-width;
-  // max-width: $largest-col-width;
-  // font-size: 100vw;
-  // font-size: calc(#{$largest-col-width} + 100vw);
-  // font-size:calc(100vw);
-  // font-size: calc(
-  // 100vw -
-  //   (
-  //     (-100vw - #{$largest-col-width})
-  //     *
-  //     (100vw - #{$largest-col-width})
-  //   )
-  // );
+
 }
   body{
-    @include font-size-line-height($main-font-size, $main-line-height, $view-min-font-size);
-    font-family:$view-main-font;
-    color:$view-main-color;
     overflow:auto;
     overflow-x:hidden;
     width: 100%;

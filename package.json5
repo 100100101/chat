@@ -4,12 +4,12 @@
 	description: '',
 	main: 'index.js',
 	scripts: {
-		'server:prod': 'NODE_ENV=production webpack-dev-server --progress --colors',
-		'server:dev': 'NODE_ENV=development webpack-dev-server --progress --colors',
+		'server:prod': 'NODE_ENV=production NODE_OUTPUT=server webpack-dev-server --progress --colors',
+		'server:dev': 'NODE_ENV=development NODE_OUTPUT=server webpack-dev-server --progress --colors --inline --hot',
 		/*--inspect */
-		// 'server:dev': 'NODE_ENV=development node --inspect node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --progress --colors',
-		'build:prod': 'NODE_ENV=production webpack --progress --colors',
-		'build:dev': 'NODE_ENV=development webpack --progress --colors',
+		// 'server:dev': 'NODE_ENV=development NODE_OUTPUT=server node --inspect node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.js --progress --colors',
+		'build:prod': 'NODE_ENV=production NODE_OUTPUT=build webpack --progress --colors',
+		'build:dev': 'NODE_ENV=development NODE_OUTPUT=build webpack --progress --colors',
 		'vue-migration-helper': 'vue-migration-helper'
 	},
 	keywords: [],
@@ -49,6 +49,9 @@
 		'postcss-cssnext': '^2.9.0',
 		'babel-runtime': '^6.20.0',
 		'postcss-reporter': '^2.0.0',
+		'optimize-css-assets-webpack-plugin': '^1.3.0',
+		cssnano: '^3.9.1',
+		'babel-plugin-transform-object-rest-spread': '^6.20.2',
 	},
 	dependencies: {
 		tinymce: '^4.5.0',

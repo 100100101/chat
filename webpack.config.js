@@ -1,7 +1,9 @@
 const
 	/**/
-	production = process.env.NODE_ENV === 'production'
-	,development = process.env.NODE_ENV === 'development'
+	PRODUCTION = process.env.NODE_ENV === 'production'
+	,DEVELOPMENT = process.env.NODE_ENV === 'development'
+	,BUILD = process.env.NODE_OUTPUT === 'build'
+	,SERVER = process.env.NODE_OUTPUT === 'server'
 	/**/
 	,path = require('path')
 	,webpack = require('webpack')
@@ -10,7 +12,7 @@ const
 	// ,HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 	/*Write html files to hard disk even when using the webpack dev server or middleware*/
 	,HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
-	,BabiliPlugin = require('babili-webpack-plugin')
+	// ,BabiliPlugin = require('babili-webpack-plugin')
 
 	,postcssModules = [
 		require('postcss-cssnext'),
@@ -21,27 +23,28 @@ const
 			// require('lost')(),
 		require('postcss-reporter')(),
 	]
+	,OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 ;
 
 module.exports = {
-	devtool: 'source-map',
+	devtool: /*'source-map'*/'eval',
 
 	entry: {
 		// 'vendor': ['tinymce/tinymce.jquery.js'],
 		'bundle': ['./source/index.js'],
 	},
 
-	resolve: {
-	  alias: {
-	    // 'vue': 'vue/dist/vue.js',
-			// 'tinymce': 'tinymce/tinymce',
-	  }
-	},
-
 	output: {
 		path: __dirname + '/public/',
 		filename: 'js/[name].js',
-		publicPath: './',
+		publicPath: SERVER ? '/' : './',
+	},
+
+	resolve: {
+	  alias: {
+	    'vue$': 'vue/dist/vue.common.js',
+			// 'tinymce$': 'tinymce/tinymce.jquery.js',
+	  }
 	},
 
 	module: {
@@ -54,7 +57,7 @@ module.exports = {
 					options: {
 						comments: false,
 						presets: ['es2015'/*, 'stage-3'*/],
-						// plugins: ['transform-runtime'],
+						plugins: ['transform-object-rest-spread', /*'transform-runtime',*/],
 					}
 				}],
 			},
@@ -68,7 +71,8 @@ module.exports = {
 						loader: 'css-loader',
 						options: {
 							// root: '.',
-							sourceMap: production,
+							sourceMap: DEVELOPMENT,
+							// minimize: true,
 							// modules: true,
 						},
 					},
@@ -86,22 +90,8 @@ module.exports = {
 							postcss: postcssModules,
 						}
 					},
-
-					// {
-					// 	loader: 'postcss-loader',
-					// 	options: {
-					// 		postcss: [require('postcss-cssnext')()],
-					// 	}
-					// },
-					// {
-					// 	loader: 'babel-loader',
-					// 	options: {
-					// 		presets: ['es2015'/*, 'stage-3'*/],
-					// 	}
-					// }
 				],
 			},
-
 
 			// HTML LOADER
 			{
@@ -111,7 +101,6 @@ module.exports = {
 						loader: 'html-loader',
 					}
 				]
-
 			},
 
 			// {
@@ -127,14 +116,22 @@ module.exports = {
 						loader:'file-loader',
 						options: {
 							/**/
-							publicPath: '..',
+							publicPath: SERVER ? '/' : '../',
 							// outputPath: '/images/',
-							name: '/images/[name].[ext]',
+							name: 'images/[name].[ext]',
 						},
 					},
 				]
-
 			},
+
+			// {
+			// 	test: /\.(png|jpg|gif)$/,
+			// 	loader: 'url-loader',
+			// 	query: {
+			// 		/*inline base64 URLs for <=8k images, direct URLs for the rest*/
+			// 		// 'limit': '',
+			// 	}
+			// },
 
 			{
 				test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
@@ -142,8 +139,8 @@ module.exports = {
 					{
 						loader: 'file-loader',
 						options: {
-							publicPath: '..',
-							name: '/fonts/[name]/[name].[ext]',
+							publicPath: SERVER ? '/' : '../',
+							name: 'fonts/[name]/[name].[ext]',
 						},
 					}
 				],
@@ -155,43 +152,11 @@ module.exports = {
 			// 	loader: 'base64-font-loader'
 			// },
 
-			// {
-			// 	test: /\.(png|jpg|gif)$/,
-			// 	loader: 'url-loader',
-			// 	query: {
-			// 		/*inline base64 URLs for <=8k images, direct URLs for the rest*/
-			// 		// 'limit': '8192000',
-			// 	}
-			// },
-
-			// {
-      //   test: require.resolve('tinymce/tinymce'),
-      //   loaders: [
-      //     'imports?this=>window',
-      //     'exports?window.tinymce'
-      //   ]
-      // },
-
-			// {
-			// 	test: /tinymce\/plugins/,
-			// 	loader: 'imports?tinymce,this=>{tinymce:tinymce}'
-			// },
-
-      // {
-      //   test: /tinymce\/(themes|plugins)\//,
-			// 	exclude: /\.css$/,
-      //   loaders: [
-      //     'imports?this=>window'
-      //   ]
-      // },
-
 		]
 	},
 
 
-
 	plugins: [
-
 		new webpack.BannerPlugin(`build time for UNIX : ${new Date()}`),
 
 		new webpack.DefinePlugin({
@@ -229,8 +194,7 @@ module.exports = {
 				filename: 'index.html',
 				filetype: 'html',
 				template: './source/index.html',
-				alwaysWriteToDisk: true,
-			}, production && {
+			}, PRODUCTION && {
 				/*embed all javascript and css inline*/
 				inlineSource: '.(js|css)$',
 				minify: {
@@ -251,12 +215,21 @@ module.exports = {
       filename: 'css/[name].bundle.css',
       allChunks: true,
 			/*disables the plugin*/
-			disable: development,
+			disable: !(BUILD && PRODUCTION),
     }),
 
 
+  ].concat(PRODUCTION ? [
+		new OptimizeCssAssetsPlugin({
+			cssProcessor: require('cssnano'),
+			cssProcessorOptions: {
+				discardComments: {
+					removeAll: true
+				}
+			},
+			canPrint: true
+		}),
 
-  ].concat(production ? [
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
@@ -269,7 +242,6 @@ module.exports = {
   	] : []
 	),
 
-
 	watch: true,
 	watchOptions: {
 		aggregateTimeout: 100,
@@ -280,9 +252,9 @@ module.exports = {
     port: 8080,
     contentBase: /*path.join(__dirname, 'public')*/ __dirname + '/public/',
     /*adds the HotModuleReplacementPlugin and switch the server to hot mode. Use this in combination with the inline option*/
-    hot: development,
+    hot: DEVELOPMENT,
     /*embed the webpack-dev-server runtime into the bundle. Defaults to false*/
-    inline: development,
+    inline: DEVELOPMENT,
     /*don't finish the grunt task. Use this in combination with the watch option*/
     // keepalive: true,
   },

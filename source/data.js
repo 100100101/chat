@@ -21,12 +21,5 @@ module.exports =
       })(new Date),
       message: 'Здравствуйте, могу ли я вам чем-то помочь...'
     },
-    2: {
-      userId: '1',
-      date: (date => {
-        return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-      })(new Date),
-      message: 'Здравствуйте, я хочу...'
-    },
   }
 };

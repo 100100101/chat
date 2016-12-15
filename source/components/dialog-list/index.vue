@@ -1,5 +1,5 @@
 <template>
-  <ul :class="`window${instaceCount}__dialog dialog-list`">
+   <ul :class="`window${instaceCount}__dialog dialog-list`">
     <li v-for="post in chatData.posts"
         :class="`dialog-list__post_${(post.userId === userId.toString()) ? 'my' : 'interlocutor'} post`">
         <figure class="post__container">
@@ -21,6 +21,7 @@
         </figure>
     </li>
   </ul>
+
 </template>
 
 <style>
@@ -31,6 +32,7 @@
     margin-bottom: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    min-height: 150px;
   }
     [class*='dialog-list__post']{
       /*border-width: 1px;
@@ -126,8 +128,44 @@ export default {
     };
   },
 
+  methods: {
+    scrollToButtom() {
+      let
+        el = this.$el;
+      el.scrollTop = el.scrollHeight;
+    }
+  },
+
+  beforeCreate() {
+
+  },
+  created() {
+
+  },
+  beforeMount(){
+    
+  },
   mounted(){
     this.instaceCount += 1;
+    this.scrollToButtom();
+  },
+  beforeUpdate(){
+
+  },
+  updated(){
+    this.scrollToButtom();
+  },
+  activated(){
+
+  },
+  deactivated(){
+
+  },
+  beforeDestroy(){
+
+  },
+  destroyed(){
+
   },
 
 }
